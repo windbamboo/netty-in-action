@@ -10,7 +10,7 @@ import io.netty.channel.ChannelPromise;
 public class EchoServerOutHandler2 extends ChannelOutboundHandlerAdapter {
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-        System.out.println("handler2 write msg:");
+        System.out.println("Outbound2 handler");
         super.write(ctx, msg, promise);
     }
 }

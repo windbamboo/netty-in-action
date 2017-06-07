@@ -10,8 +10,12 @@ import io.netty.util.CharsetUtil;
 public class EchoServerOutHandler1 extends ChannelOutboundHandlerAdapter {
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-        System.out.println("handler1 write msg:");
-        super.write(ctx, msg, promise);
+        System.out.println("Outbound1 handler");
+        String response = "I am ok!";
+        ByteBuf encoded = ctx.alloc().buffer(4 * response.length());
+        encoded.writeBytes(response.getBytes());
+        ctx.write(encoded);
+        ctx.flush();
     }
 
     @Override
