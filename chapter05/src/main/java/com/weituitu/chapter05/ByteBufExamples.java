@@ -52,7 +52,7 @@ public class ByteBufExamples {
     private final static Random random = new Random();
     private static final ByteBuf BYTE_BUF_FROM_SOMEWHERE = Unpooled.buffer(1024);
     private static final Channel CHANNEL_FROM_SOMEWHERE = new NioSocketChannel();
-  //  private static final ChannelHandlerContext CHANNEL_HANDLER_CONTEXT_FROM_SOMEWHERE = DUMMY_INSTANCE;
+    //  private static final ChannelHandlerContext CHANNEL_HANDLER_CONTEXT_FROM_SOMEWHERE = DUMMY_INSTANCE;
 
     /**
      * 代码清单 5-1 支撑数组
@@ -76,7 +76,7 @@ public class ByteBufExamples {
      * 代码清单 5-2 访问直接缓冲区的数据
      */
     public static void directBuffer() {
-       // ByteBuf directBuf = BYTE_BUF_FROM_SOMEWHERE; //get reference form somewhere
+        // ByteBuf directBuf = BYTE_BUF_FROM_SOMEWHERE; //get reference form somewhere
         ByteBuf directBuf = Unpooled.directBuffer(1024); //get reference form somewhere
         //检查 ByteBuf 是否由数组支撑。如果不是，则这是一个直接缓冲区
         if (!directBuf.hasArray()) {
@@ -118,10 +118,14 @@ public class ByteBufExamples {
         messageBuf.addComponents(headerBuf, bodyBuf);
         //...
         //删除位于索引位置为 0（第一个组件）的 ByteBuf
-        messageBuf.removeComponent(0); // remove the header
+        //   messageBuf.removeComponent(0); // remove the header
         //循环遍历所有的 ByteBuf 实例
+        System.out.println(messageBuf);
         for (ByteBuf buf : messageBuf) {
             System.out.println(buf.toString());
+        }
+        for (int i = 0; i < messageBuf.numComponents(); i++) {
+            System.out.println(messageBuf.component(i));
         }
     }
 
@@ -179,6 +183,9 @@ public class ByteBufExamples {
      */
     public static void byteProcessor() {
         ByteBuf buffer = BYTE_BUF_FROM_SOMEWHERE; //get reference form somewhere
+        buffer.writeByte(1);
+        buffer.writeChar('a');
+        buffer.writeChar('\r');
         int index = buffer.forEachByte(ByteProcessor.FIND_CR);
     }
 
@@ -216,6 +223,10 @@ public class ByteBufExamples {
         Charset utf8 = Charset.forName("UTF-8");
         //创建 ByteBuf 以保存所提供的字符串的字节
         ByteBuf buf = Unpooled.copiedBuffer("Netty in Action rocks!", utf8);
+        ByteBuf buf2 = buf.duplicate();
+        buf2.setByte(0, 1);
+        byte b = buf.getByte(0);
+        System.out.println(buf.readSlice(10).toString(utf8));
         //创建该 ByteBuf 从索引 0 开始到索引 15 结束的分段的副本
         ByteBuf copy = buf.copy(0, 15);
         //将打印“Netty in Action”
@@ -235,6 +246,7 @@ public class ByteBufExamples {
         ByteBuf buf = Unpooled.copiedBuffer("Netty in Action rocks!", utf8);
         //打印第一个字符'N'
         System.out.println((char) buf.getByte(0));
+        System.out.println((char) buf.getByte(1));
         //存储当前的 readerIndex 和 writerIndex
         int readerIndex = buf.readerIndex();
         int writerIndex = buf.writerIndex();
@@ -278,9 +290,9 @@ public class ByteBufExamples {
         //从 Channel 获取一个到ByteBufAllocator 的引用
         ByteBufAllocator allocator = channel.alloc();
         //...
-       // ChannelHandlerContext ctx = CHANNEL_HANDLER_CONTEXT_FROM_SOMEWHERE; //get reference form somewhere
+        ChannelHandlerContext ctx = null; //get reference form somewhere
         //从 ChannelHandlerContext 获取一个到 ByteBufAllocator 的引用
-      //  ByteBufAllocator allocator2 = ctx.alloc();
+        ByteBufAllocator allocator2 = ctx.alloc();
         //...
     }
 
